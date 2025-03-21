@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 using DG.Tweening;
 using System.Collections;
 
-public class MainMenuScript : MonoBehaviour {
+public class ChoiceMenuScript : MonoBehaviour {
 
     private UIDocument document;
 

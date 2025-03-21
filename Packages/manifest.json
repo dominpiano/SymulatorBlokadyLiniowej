@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "ca.andydbc.unity-texture-packer": "file:C:/Users/Dominik Golemberski/Desktop/unity-texture-packer-0.1.0",
     "com.unity.collab-proxy": "2.7.1",
     "com.unity.feature.development": "1.0.2",
     "com.unity.inputsystem": "1.12.0",
