@@ -1,0 +1,48 @@
+.label {
+    -unity-font-definition: url("project://database/Assets/Fonts/Montserrat-Medium.ttf?fileID=12800000&guid=171e4b9d20a30c246a17a3bed408143e&type=3#Montserrat-Medium");
+    font-size: 60px;
+    -unity-text-align: upper-center;
+    margin-top: 30px;
+    margin-right: 30px;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    color: rgb(0, 0, 0);
+}
+
+.button-inactive {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    -unity-background-image-tint-color: rgb(130, 130, 130);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.button:hover {
+    scale: 1.05 1.05;
+}
+
+.button-inactive:hover {
+    scale: 1 1;
+}
+
+.button {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.button-selected {
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    transition-duration: 0.1s;
+    transition-timing-function: ease-in-out;
+    -unity-background-scale-mode: stretch-to-fill;
+    -unity-background-image-tint-color: rgb(170, 253, 177);
+}

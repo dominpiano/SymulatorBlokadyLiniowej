@@ -10,37 +10,33 @@ public class ChoiceMenuScript : MonoBehaviour {
 
     private UIDocument document;
 
+    [SerializeField]
+    private GameObject mainMenu;
+
     //Track choice buttons
-    private int trackType; //0:one-two, 1:two-one, 2:two-two
-    List<Button> trackButtons;
+    List<Button> trackTypeButtons;
 
     //Interlocking devices type buttons
-    private int deviceType; //0:mech, 1:electr, 2:comp
     List<Button> deviceTypeButtons;
 
     //Line block type buttons
-    private int lineBlockType; //0:C, 1:eap, 2:eac
     List<Button> lineBlockTypeButtons;
 
     //Other buttons
     private Button backButton;
     private Button playButton;
 
-    private AudioSource audioSource;
-    [SerializeField]
-    private AudioClip overSound, clickSound;
-
-    void Start() {
+    void OnEnable() {
         document = GetComponent<UIDocument>();
-        audioSource = GetComponent<AudioSource>();
 
         //Clicking sounds
         List<Button> buttons = document.rootVisualElement.Query<Button>().ToList();
         foreach (Button button in buttons) {
-            button.RegisterCallback<PointerOverEvent>(SoundOver);
+            button.RegisterCallback<PointerOverEvent>(AudioManager.Instance.PlayOverSound);
+            button.RegisterCallback<ClickEvent>(AudioManager.Instance.PlayClickSound);
         }
 
-        trackButtons = new List<Button> {
+        trackTypeButtons = new List<Button> {
             document.rootVisualElement.Q("OneTrackTwoWayButton") as Button,
             document.rootVisualElement.Q("TwoTrackOneWayButton") as Button,
             document.rootVisualElement.Q("TwoTrackTwoWayButton") as Button
@@ -61,34 +57,73 @@ public class ChoiceMenuScript : MonoBehaviour {
         backButton = document.rootVisualElement.Q("BackButton") as Button;
         playButton = document.rootVisualElement.Q("PlayButton") as Button;
 
-        for(int i = 0; i < trackButtons.Count; i++)
-            trackButtons[i].RegisterCallback<ClickEvent>(evt => ChooseTrackType(evt, i));
+        for (int i = 0; i < trackTypeButtons.Count; i++) {
+            int ind = i; //For lambda variable capturing solve
+            trackTypeButtons[i].RegisterCallback<ClickEvent>(evt => ChooseTrackTypeEvent(evt, ind));
+        }
 
-        for (int i = 0; i < deviceTypeButtons.Count; i++)
-            deviceTypeButtons[i].RegisterCallback<ClickEvent>(evt => ChooseDeviceType(evt, i));
+        for (int i = 0; i < deviceTypeButtons.Count; i++) {
+            int ind = i;
+            deviceTypeButtons[i].RegisterCallback<ClickEvent>(evt => ChooseDeviceTypeEvent(evt, ind));
+        }
 
-        for (int i = 0; i < lineBlockTypeButtons.Count; i++)
-            lineBlockTypeButtons[i].RegisterCallback<ClickEvent>(evt => ChooseLineBlockType(evt, i));
+        for (int i = 0; i < lineBlockTypeButtons.Count; i++) {
+            int ind = i;
+            lineBlockTypeButtons[i].RegisterCallback<ClickEvent>(evt => ChooseLineBlockTypeEvent(evt, ind));
+        }
+
+        backButton.RegisterCallback<ClickEvent>(GoBackEvent);
+        playButton.RegisterCallback<ClickEvent>(PlayEvent);
 
     }
 
-    private void ChooseTrackType(ClickEvent evt, int type) {
-        trackType = type;
-        SelectOneOption(trackButtons, type);
+    private void ChooseTrackTypeEvent(ClickEvent evt, int type) {
+        Globals.TrackType = type;
+        SelectOneOption(trackTypeButtons, type);
         foreach (var b in deviceTypeButtons)
             b.RemoveFromClassList("button-inactive");
     }
 
-    private void ChooseDeviceType(ClickEvent evt, int type) {
-
+    private void ChooseDeviceTypeEvent(ClickEvent evt, int type) {
+        Globals.DeviceType = type;
+        SelectOneOption(deviceTypeButtons, type);
+        //Depending on the device type there is different set of line blocks
+        switch (type) {
+            case 0:
+                lineBlockTypeButtons[0].RemoveFromClassList("button-inactive");
+                lineBlockTypeButtons[1].AddToClassList("button-inactive");
+                lineBlockTypeButtons[2].AddToClassList("button-inactive");
+                RemoveSelection(lineBlockTypeButtons);
+                break;
+            default:
+                foreach (var b in lineBlockTypeButtons)
+                    b.RemoveFromClassList("button-inactive");
+                RemoveSelection(lineBlockTypeButtons);
+                break;
+        }
     }
 
-    private void ChooseLineBlockType(ClickEvent evt, int type) {
-
+    private void ChooseLineBlockTypeEvent(ClickEvent evt, int type) {
+        Globals.LineBlockType = type;
+        SelectOneOption(lineBlockTypeButtons, type);
+        playButton.RemoveFromClassList("button-inactive");
     }
 
+    private void GoBackEvent(ClickEvent evt) {
+        mainMenu.SetActive(true);
+        this.gameObject.SetActive(false);
+    }
+
+    private void PlayEvent(ClickEvent evt) {
+        if (Globals.GameMode == 0)
+            SceneController.Instance.LoadScene("PlaySingleScene");
+        //else if(Globals.GameMode == 1)
+        //    SceneController.Instance.LoadScene("PlayMultiScene");
+    }
+
+    //Helper methods
     private void SelectOneOption(List<Button> btns, int indx) {
-        foreach(var btn in btns.Select((val, i) => new {val, i})) {
+        foreach (var btn in btns.Select((val, i) => new { val, i })) {
             if (btn.i == indx)
                 btn.val.AddToClassList("button-selected");
             else
@@ -96,8 +131,8 @@ public class ChoiceMenuScript : MonoBehaviour {
         }
     }
 
-    private void SoundOver(PointerOverEvent evt) {
-        audioSource.PlayOneShot(overSound);
+    private void RemoveSelection(List<Button> btns) {
+        foreach (var btn in btns)
+            btn.RemoveFromClassList("button-selected");
     }
-
 }

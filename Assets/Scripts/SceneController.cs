@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Cysharp.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -9,20 +10,24 @@ public class SceneController : MonoBehaviour {
     public static SceneController Instance;
 
     private void Awake() {
-        if(Instance == null) {
+        if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
             Destroy(Instance);
     }
 
-    public void LoadScene(string scName) {
-        SceneManager.LoadSceneAsync(scName);
+    public async UniTask LoadScene(string scName) {
+        await OverlayManager.Instance.ShowOverlay();
+        await SceneManager.LoadSceneAsync(scName);
+        await OverlayManager.Instance.HideOverlay();
     }
 
-    public void LoadScene(int scIndex) {
-        SceneManager.LoadSceneAsync(scIndex);
+    public async UniTask LoadScene(int scIndex) {
+        await OverlayManager.Instance.ShowOverlay();
+        await SceneManager.LoadSceneAsync(scIndex);
+        await OverlayManager.Instance.HideOverlay();
     }
 
 }
