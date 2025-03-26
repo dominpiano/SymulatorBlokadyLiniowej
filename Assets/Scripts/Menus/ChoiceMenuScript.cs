@@ -26,7 +26,7 @@ public class ChoiceMenuScript : MonoBehaviour {
     private Button backButton;
     private Button playButton;
 
-    void OnEnable() {
+    private void OnEnable() {
         document = GetComponent<UIDocument>();
 
         //Clicking sounds
