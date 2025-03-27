@@ -6,9 +6,18 @@
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
-                    "name": "Look",
-                    "type": "Value",
+                    "name": "RotationStarted",
+                    "type": "Button",
                     "id": "9416f26c-cf2f-460b-8ae9-984ce9c93269",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "f0fb1571-3d69-462c-8a1e-664ac6f731ea",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -28,11 +37,11 @@
                 {
                     "name": "",
                     "id": "78427cde-2101-48f0-8fbb-052d96185383",
-                    "path": "<Mouse>/delta",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Look",
+                    "action": "RotationStarted",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -44,6 +53,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7fbb0677-26f7-4283-a56e-f195805fc74b",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
