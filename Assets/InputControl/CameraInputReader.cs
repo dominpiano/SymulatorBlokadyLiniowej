@@ -8,7 +8,7 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
 
     private CameraControlActions camActions;
     private bool rotationStarted; //Whether user started rotating
-    private bool clickedOnLeft => Mouse.current.position.ReadValue().x < Screen.width / 2; //Which side did he click
+    private CameraSide camSide => Input.mousePosition.x < Screen.width / 2 ? CameraSide.Left : CameraSide.Right; //Which side did he click
 
     void OnEnable() {
         if(camActions == null) {
@@ -34,6 +34,9 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
     public event Action<float> ZoomLeftEvent;
     public event Action<float> ZoomRightEvent;
 
+    public event Action<CameraSide> MousePressedEvent;
+    public event Action MouseReleasedEvent;
+
     public void OnRotationStarted(InputAction.CallbackContext context) {
         if(context.phase == InputActionPhase.Performed)
             rotationStarted = true;
@@ -44,7 +47,7 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
     public void OnRotation(InputAction.CallbackContext context) {
         if (!rotationStarted)
             return;
-        if (clickedOnLeft)
+        if (camSide == CameraSide.Left)
             MouseMoveOnLeftEvent.Invoke(context.ReadValue<Vector2>());
         else
             MouseMoveOnRightEvent.Invoke(context.ReadValue<Vector2>());
@@ -52,10 +55,17 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
 
     public void OnZoom(InputAction.CallbackContext context) {
         if(context.phase == InputActionPhase.Performed) {
-            if (clickedOnLeft)
+            if (camSide == CameraSide.Left)
                 ZoomLeftEvent.Invoke(context.ReadValue<Vector2>().y);
             else
                 ZoomRightEvent.Invoke(context.ReadValue<Vector2>().y);
         }
+    }
+
+    public void OnInteract(InputAction.CallbackContext context) {
+        if (context.phase == InputActionPhase.Performed)
+            MousePressedEvent.Invoke(camSide);
+        else if (context.phase == InputActionPhase.Canceled)
+            MouseReleasedEvent.Invoke();
     }
 }
