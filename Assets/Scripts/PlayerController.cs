@@ -7,17 +7,12 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private CameraInputReader inputReader;
 
-    //Global signalbox
-    [SerializeField]
-    private SignalboxController signalBox;
-
-    //Klawisz things
-    private bool klawiszPressed;
-    private Animator TempDevicesAnimator;
-
+    //Signalbox segments
+    private SignalboxSegment signalboxSegment;
+    
     LayerMask layerMask;
 
-    private void Awake() {
+    private void Start() {
         layerMask = LayerMask.GetMask("SignalboxDevices");
     }
 
@@ -45,11 +40,18 @@ public class PlayerController : MonoBehaviour {
         if (camSide == CameraSide.Left) {
             if (Physics.Raycast(leftCam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100, layerMask)) {
                 if (hit.collider.gameObject.name.ContainsInsensitive("klawisz")) {
-                    TempDevicesAnimator = hit.collider.gameObject.GetComponentInParent<Animator>();
-                    TempDevicesAnimator.SetBool("KlawiszDown", true);
-                    klawiszPressed = true;
+                    //Getting segment
+                    signalboxSegment = hit.collider.gameObject.GetComponentInParent<SignalboxSegment>();
+
+                    signalboxSegment.SegmentAnimator.SetBool("KlawiszDown", true);
+                    signalboxSegment.KlawiszDown = true;
 
                     //Tarczka
+                    signalboxSegment.SegmentAnimator.SetFloat("TarczkaSpeed", 1);
+                    if (!signalboxSegment.Tarczka.TarczkaState)
+                        signalboxSegment.SegmentAnimator.SetBool("TarczkaUp", true);
+                    else if (signalboxSegment.Tarczka.TarczkaState) 
+                        signalboxSegment.SegmentAnimator.SetBool("TarczkaUp", false);
                     
                 }
             }
@@ -62,9 +64,13 @@ public class PlayerController : MonoBehaviour {
 
     private void OnMouseReleased() {
         //Klawisz blokowy
-        if (klawiszPressed) {
-            TempDevicesAnimator.SetBool("KlawiszDown", false);
-            klawiszPressed = true;
+        if (signalboxSegment) {
+            if (signalboxSegment.KlawiszDown) {
+                signalboxSegment.SegmentAnimator.SetBool("KlawiszDown", false);
+                signalboxSegment.KlawiszDown = true;
+            }
+
+            signalboxSegment.SegmentAnimator.SetFloat("TarczkaSpeed", 0);
         }
     }
 }
