@@ -1,19 +1,22 @@
+using System;
 using UnityEngine;
 
 public class SignalboxSegment : MonoBehaviour {
 
+    [SerializeField]
+    public BlockType Type;
+
+    public bool BlockState;
     public Animator SegmentAnimator;
-    public TarczkaBloku Tarczka;
     public bool KlawiszDown;
+    public bool KlawiszLockedDown;
 
     private void Start() {
         SegmentAnimator = GetComponent<Animator>();
-        Tarczka = GetComponentInChildren<TarczkaBloku>();
     }
 
     //Animation stuff
     public void ChangeTarczkaState(int state) {
-        Tarczka.TarczkaState = state == 1;
+        BlockState = (state == 1);
     }
-
 }
