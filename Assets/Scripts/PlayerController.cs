@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour {
         if (Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 100, layerMask)) {
             //Klawisz
             if (hit.collider.gameObject.name.ContainsInsensitive("klawisz")) {
+
                 //Getting segment
                 signalboxSegment = hit.collider.gameObject.GetComponentInParent<SignalboxSegment>();
 
