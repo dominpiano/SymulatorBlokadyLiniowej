@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [SerializeField]
-    private CameraInputReader inputReader;
+    private InputReader inputReader;
 
     //Signalbox segments
     private SignalboxSegment signalboxSegment;

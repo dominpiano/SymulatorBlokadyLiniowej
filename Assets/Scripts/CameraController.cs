@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class CamerAcontroller : MonoBehaviour {
 
     [SerializeField]
-    private CameraInputReader inputReader;
+    private InputReader inputReader;
     private Camera cam;
 
     [SerializeField]

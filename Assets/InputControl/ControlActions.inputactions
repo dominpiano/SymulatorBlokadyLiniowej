@@ -1,5 +1,5 @@
 {
-    "name": "CameraControlActions",
+    "name": "ControlActions",
     "maps": [
         {
             "name": "Camera",

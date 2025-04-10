@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 300
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lights_1
+      name: lights_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 239
-        width: 49
-        height: 48
+        y: 500
+        width: 156
+        height: 157
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d2e6417cec3b7c345a4035bc0077e5ae
-      internalID: 179918438
+      spriteID: ccd26b77610170b48ab88eb7cca5e38d
+      internalID: 229955246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lights_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 333
+        width: 156
+        height: 158
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25ed3f5103d115740b05e7c16ed74abc
+      internalID: 215643036
       vertices: []
       indices: 
       edges: []
@@ -123,9 +145,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 178
-        width: 49
-        height: 50
+        y: 166
+        width: 156
+        height: 158
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,30 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 221d596afd6fa0b49bc54a865ead7cc4
-      internalID: -717017379
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: lights_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 119
-        width: 49
-        height: 49
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d8adcdfe5ab56104cbc82f1472320470
-      internalID: -400888441
+      spriteID: 881fb453f5305cd42b955260b9ed3359
+      internalID: -198340802
       vertices: []
       indices: 
       edges: []
@@ -167,31 +167,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 59
-        width: 49
-        height: 50
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ddbee1893b5759418f84a79152c88dd
-      internalID: 982620373
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: lights_5
-      rect:
-        serializedVersion: 2
-        x: 0
         y: 0
-        width: 49
-        height: 49
+        width: 156
+        height: 157
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: afde6cb3540594c429f53a3680b88796
-      internalID: -1387963827
+      spriteID: 02fb725b7ba1a164cb54ffafdb7efa2e
+      internalID: 596154390
       vertices: []
       indices: 
       edges: []
@@ -210,7 +188,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 19aebeec5786319489c9f67fdee82835
+    spriteID: ff06b360aae95d441a0b1b83c486aea5
     internalID: 0
     vertices: []
     indices: 
@@ -220,11 +198,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lights_0: -400888441
-      lights_1: 179918438
-      lights_2: -717017379
-      lights_3: 982620373
-      lights_5: -1387963827
+      lights_0: 229955246
+      lights_1: 215643036
+      lights_2: -198340802
+      lights_3: 596154390
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

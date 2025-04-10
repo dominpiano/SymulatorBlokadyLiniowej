@@ -1,30 +1,33 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static CameraControlActions;
+using UnityEngine.UI;
+using static ControlActions;
 
-[CreateAssetMenu(menuName = "CameraInputReader")]
-public class CameraInputReader : ScriptableObject, ICameraActions {
+[CreateAssetMenu(menuName = "InputReader")]
+public class InputReader : ScriptableObject, ICameraActions {
 
-    private CameraControlActions camActions;
+    private ControlActions controlActions;
     private bool rotationStarted; //Whether user started rotating
     private CameraSide camSide => Input.mousePosition.x < Screen.width / 2 ? CameraSide.Left : CameraSide.Right; //Which side did he click
 
     void OnEnable() {
-        if(camActions == null) {
-            camActions = new CameraControlActions();
+        if(controlActions == null) {
+            controlActions = new ControlActions();
 
-            camActions.Camera.SetCallbacks(this);
-            SetCamera();
+            controlActions.Camera.SetCallbacks(this);
+            SetActions();
         }
     }
 
     private void OnDisable() {
-        camActions.Disable();
+        controlActions.Disable();
     }
 
-    private void SetCamera() {
-        camActions.Camera.Enable();
+    private void SetActions() {
+        controlActions.Camera.Enable();
     }
 
     //Two separate events for reading mouse movement on the left side and right side of screen
@@ -37,6 +40,10 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
     public event Action<CameraSide> MousePressedEvent;
     public event Action MouseReleasedEvent;
 
+    //UI events
+    public event Action UILeftMouseClick;
+
+    //Camera inputs
     public void OnRotationStarted(InputAction.CallbackContext context) {
         if(context.phase == InputActionPhase.Performed)
             rotationStarted = true;
@@ -67,5 +74,15 @@ public class CameraInputReader : ScriptableObject, ICameraActions {
             MousePressedEvent.Invoke(camSide);
         else if (context.phase == InputActionPhase.Canceled)
             MouseReleasedEvent.Invoke();
+    }
+
+    //UI inputs
+    public void OnClickLeft(string semName) {
+        Debug.Log("Kliknieto " +  semName);
+        UILeftMouseClick.Invoke();
+    }
+
+    public void OnClickRight() {
+        
     }
 }
