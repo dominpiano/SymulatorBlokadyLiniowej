@@ -41,7 +41,7 @@ public class InputReader : ScriptableObject, ICameraActions {
     public event Action MouseReleasedEvent;
 
     //UI events
-    public event Action UILeftMouseClick;
+    public event Action<Semaphore> UILeftMouseClick;
 
     //Camera inputs
     public void OnRotationStarted(InputAction.CallbackContext context) {
@@ -77,9 +77,8 @@ public class InputReader : ScriptableObject, ICameraActions {
     }
 
     //UI inputs
-    public void OnClickLeft(string semName) {
-        Debug.Log("Kliknieto " +  semName);
-        UILeftMouseClick.Invoke();
+    public void OnClickLeft(Semaphore sem) {
+        UILeftMouseClick?.Invoke(sem);
     }
 
     public void OnClickRight() {

@@ -23,10 +23,15 @@ public class UIReader : MonoBehaviour {
             List<RaycastResult> results = new List<RaycastResult>();
             raycaster.Raycast(pointerData, results);
 
+            //Cycle through all raycasted objects
             foreach (RaycastResult result in results) {
-                if (result.gameObject.name.ContainsInsensitive("Sem"))
-                    inputReader.OnClickLeft(result.gameObject.name);
-                return;
+
+                //Pick clicked semaphore and send it to master input reader
+                if (result.gameObject.name.ContainsInsensitive("Sem")) {
+                    inputReader.OnClickLeft(result.gameObject.GetComponent<Semaphore>());
+                    return;
+                }
+                continue;
             }
         }
     }
