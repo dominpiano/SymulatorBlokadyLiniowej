@@ -7,6 +7,9 @@ public class StationManager : MonoBehaviour {
     [SerializeField]
     private InputReader inputReader;
 
+    [SerializeField]
+    private List<Semaphore> semaphores;
+
     private void OnEnable() {
         inputReader.UILeftMouseClick += OnUILeftMouseClick;
     }
