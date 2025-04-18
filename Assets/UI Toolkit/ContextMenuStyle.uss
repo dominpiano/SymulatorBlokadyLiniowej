@@ -1,0 +1,20 @@
+.button {
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/Montserrat-Regular.ttf?fileID=12800000&guid=ba24a5a859f298d4b915f4a55b2fdb80&type=3#Montserrat-Regular");
+    font-size: 14px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    -unity-text-outline-width: 0;
+    -unity-text-outline-color: rgba(0, 0, 0, 0);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    background-color: rgb(192, 192, 192);
+}
+
+.button:hover {
+    background-color: rgb(168, 168, 168);
+}
