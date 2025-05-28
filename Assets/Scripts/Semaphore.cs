@@ -46,22 +46,15 @@ public class Semaphore : MonoBehaviour {
     }
 
     public IEnumerator LightS1() {
-        int lightIndex;
         switch (type) {
             case SemaphoreType.Sem3:
-                lightIndex = 1;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(1);
                 break;
             case SemaphoreType.Sem4:
-                lightIndex = 1;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(1);
                 break;
             case SemaphoreType.Sem5:
-                lightIndex = 2;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(2);
                 break;
             default:
                 Debug.Log("Unknown semaphore type!");
@@ -72,28 +65,107 @@ public class Semaphore : MonoBehaviour {
     }
 
     public IEnumerator LightS2() {
-        int lightIndex;
         switch (type) {
             case SemaphoreType.Sem3:
-                lightIndex = 0;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(0);
                 break;
             case SemaphoreType.Sem4:
-                lightIndex = 0;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(0);
                 break;
             case SemaphoreType.Sem5:
-                lightIndex = 0;
-                yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndex).ToArray());
-                yield return DimLights(false, semaphoreLights[lightIndex]);
+                yield return SwitchToLight(0);
                 break;
             default:
                 Debug.Log("Unknown semaphore type!");
                 break;
         }
         CurrentSignal = SemaphoreSignal.S2;
+    }
+
+    public IEnumerator LightS5() {
+        switch (type) {
+            case SemaphoreType.Sem3:
+                break;
+            case SemaphoreType.Sem4:
+                yield return SwitchToLight(2);
+                break;
+            case SemaphoreType.Sem5:
+                yield return SwitchToLight(1);
+                break;
+            default:
+                Debug.Log("Unknown semaphore type!");
+                break;
+        }
+        CurrentSignal = SemaphoreSignal.S5;
+    }
+
+    public IEnumerator LightS10() {
+        switch (type) {
+            case SemaphoreType.Sem3:
+                break;
+            case SemaphoreType.Sem4:
+                yield return SwitchToLight(0, 2);
+                break;
+            case SemaphoreType.Sem5:
+                yield return SwitchToLight(0, 3);
+                break;
+            default:
+                Debug.Log("Unknown semaphore type!");
+                break;
+        }
+        CurrentSignal = SemaphoreSignal.S10;
+    }
+
+    public IEnumerator LightS13() {
+        switch (type) {
+            case SemaphoreType.Sem3:
+                break;
+            case SemaphoreType.Sem4:
+                break;
+            case SemaphoreType.Sem5:
+                yield return SwitchToLight(1, 3);
+                break;
+            default:
+                Debug.Log("Unknown semaphore type!");
+                break;
+        }
+        CurrentSignal = SemaphoreSignal.S13;
+    }
+
+    public IEnumerator LightSz() {
+        switch (type) {
+            case SemaphoreType.Sem3:
+                SwitchToSz(2);
+                break;
+            case SemaphoreType.Sem4:
+                SwitchToSz(3);
+                break;
+            case SemaphoreType.Sem5:
+                SwitchToSz(4);
+                break;
+            default:
+                Debug.Log("Unknown semaphore type!");
+                break;
+        }
+        CurrentSignal = SemaphoreSignal.Sz;
+        yield break;
+    }
+
+    //Decide which lights to turn on or off
+    private IEnumerator SwitchToLight(params int[] lightIndices) {
+        if(lightIndices.Length == 1) {
+            yield return DimLights(true, semaphoreLights.Where((light, i) => i != lightIndices[0]).ToArray());
+            yield return DimLights(false, semaphoreLights[lightIndices[0]]);
+        }
+        else {
+            yield return DimLights(true, semaphoreLights.Where((light, i) => !lightIndices.Contains(i)).ToArray());
+            yield return DimLights(false, semaphoreLights[lightIndices[0]]);
+        }
+    }
+
+    //Special function for Sz
+    private IEnumerator SwitchToSz(int lightIndex) {
+        yield break;
     }
 
     private IEnumerator DimLights(bool dimDown, params GameObject[] lights) {

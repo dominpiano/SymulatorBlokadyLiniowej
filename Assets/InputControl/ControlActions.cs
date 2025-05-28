@@ -89,21 +89,21 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
     ""maps"": [
         {
             ""name"": ""Camera"",
-            ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
+            ""id"": ""6e0e936b-0993-4394-b94f-f9be0d725879"",
             ""actions"": [
                 {
                     ""name"": ""RotationStarted"",
                     ""type"": ""Button"",
-                    ""id"": ""9416f26c-cf2f-460b-8ae9-984ce9c93269"",
+                    ""id"": ""c894f109-5a88-4644-b76b-9002a2a1dde8"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Rotation"",
                     ""type"": ""Value"",
-                    ""id"": ""f0fb1571-3d69-462c-8a1e-664ac6f731ea"",
+                    ""id"": ""19289669-4f9d-4c96-8787-9c29dca86dd4"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -112,7 +112,7 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Zoom"",
                     ""type"": ""Value"",
-                    ""id"": ""f770c2b7-9b85-4036-96af-bd9af7cc962f"",
+                    ""id"": ""b810d75f-d9e9-4e1d-ab6b-46883bdf5822"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -121,7 +121,7 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
-                    ""id"": ""bf1c81d6-54b1-40d2-9128-8a5e4642a48f"",
+                    ""id"": ""3d154bcd-0e70-43ff-9621-8e7316d8884f"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -131,7 +131,7 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""78427cde-2101-48f0-8fbb-052d96185383"",
+                    ""id"": ""061994d8-470c-44c1-8a6e-034ec72f3375"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -142,18 +142,7 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""ff10361c-d818-4997-8c6c-7981c388429d"",
-                    ""path"": ""<Mouse>/scroll"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""7fbb0677-26f7-4283-a56e-f195805fc74b"",
+                    ""id"": ""b2e33c40-d088-499a-a543-86b3281fa787"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -164,7 +153,18 @@ public partial class @ControlActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2b51a810-57b3-486d-90b9-c7ff1930e925"",
+                    ""id"": ""067704b4-a977-416e-92fe-dbb60b7ab89c"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2764faf-cd41-4314-9e54-d53a721b052d"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",

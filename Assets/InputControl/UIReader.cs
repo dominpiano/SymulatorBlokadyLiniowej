@@ -15,7 +15,7 @@ public class UIReader : MonoBehaviour {
     private InputReader inputReader;
 
     void Update() {
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonUp(0)) {
             PointerEventData pointerData = new PointerEventData(eventSystem) {
                 position = Input.mousePosition
             };
@@ -33,6 +33,8 @@ public class UIReader : MonoBehaviour {
                 }
                 continue;
             }
+            //If no "Sem" found, then we can "unclick" e.g. context menu
+            inputReader.OnClickLeft();
         }
     }
 
