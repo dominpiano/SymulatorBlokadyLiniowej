@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using System.Xml.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -27,6 +28,12 @@ public class SceneController : MonoBehaviour {
     public async UniTask LoadScene(int scIndex) {
         await OverlayManager.Instance.ShowOverlay();
         await SceneManager.LoadSceneAsync(scIndex);
+        await OverlayManager.Instance.HideOverlay();
+    }
+
+    public async UniTask ReloadScene() {
+        await OverlayManager.Instance.ShowOverlay();
+        await SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         await OverlayManager.Instance.HideOverlay();
     }
 

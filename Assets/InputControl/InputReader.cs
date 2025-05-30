@@ -40,10 +40,6 @@ public class InputReader : ScriptableObject, ICameraActions {
     public event Action<CameraSide> MousePressedEvent;
     public event Action MouseReleasedEvent;
 
-    //UI events
-    public event Action<Semaphore> UILeftMouseClickSem;
-    public event Action UILeftMouseClick;
-
     //Camera inputs
     public void OnRotationStarted(InputAction.CallbackContext context) {
         if(context.phase == InputActionPhase.Performed)
@@ -75,18 +71,5 @@ public class InputReader : ScriptableObject, ICameraActions {
             MousePressedEvent.Invoke(camSide);
         else if (context.phase == InputActionPhase.Canceled)
             MouseReleasedEvent.Invoke();
-    }
-
-    //UI inputs
-    public void OnClickLeft(Semaphore sem) {
-        UILeftMouseClickSem?.Invoke(sem);
-    }
-
-    public void OnClickLeft() {
-        UILeftMouseClick?.Invoke();
-    }
-
-    public void OnClickRight() {
-
     }
 }
