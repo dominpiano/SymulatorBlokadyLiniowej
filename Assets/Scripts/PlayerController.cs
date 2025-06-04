@@ -70,12 +70,15 @@ public class PlayerController : MonoBehaviour {
                         //We can block Po only if there is NO train on the line and we set the signal for the train and Po is unlocked
                         //and we have permission
                         if (!StationConnection.Instance.TrainOnLine && controller.Po.BlockState && controller.Poz.BlockState) {
-                            signalboxSegment.SegmentAnimator.SetBool("KlawiszDown", true);
-                            signalboxSegment.KlawiszDown = true;
-                            StationConnection.Instance.AnimatePoChange(sbNum, signalboxSegment);
+                            if ((sbNum == 1 && (StationManager.Semaphores["SemE"].IsOn || StationManager.Semaphores["SemF"].IsOn)) || 
+                                (sbNum == 2 && (StationManager.Semaphores["SemC"].IsOn || StationManager.Semaphores["SemD"].IsOn))) {
+                                signalboxSegment.SegmentAnimator.SetBool("KlawiszDown", true);
+                                signalboxSegment.KlawiszDown = true;
+                                StationConnection.Instance.AnimatePoChange(sbNum, signalboxSegment);
 
-                            //Train goes on the line
-                            StationConnection.Instance.TrainOnLine = true;
+                                //Train goes on the line
+                                StationConnection.Instance.TrainOnLine = true;
+                            }
                         }
                         else {
                             signalboxSegment.SegmentAnimator.SetBool("KlawiszLockedDown", true);

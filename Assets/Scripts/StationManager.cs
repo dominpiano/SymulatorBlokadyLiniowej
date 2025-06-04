@@ -3,15 +3,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class StationManager : MonoBehaviour {
 
+    //Input
     [SerializeField] private InputReader inputReader;
 
+    //Train
     [SerializeField] private GameObject trainCanvas;
     [SerializeField] private GameObject trainPrefab;
+    private Button spawnTrainButton;
+    private GameObject currentTrainGO;
+    private Train currentTrain;
+    //debug
+    //[SerializeField] private Train trainObject;
+
+    
+    //UI TOOLKIT VISUALS
+    //Main Station View
+    private UIDocument stationDocument;
 
     //Sem context menu
     [SerializeField] private UIDocument semContextMenuDocument;
@@ -20,16 +33,28 @@ public class StationManager : MonoBehaviour {
     private Button substituteSignalButton;
     private Button releaseSignalButton;
 
-    //Main Station View
-    private UIDocument stationDocument;
+    //Semaphores
+    public static Dictionary<string, Semaphore> Semaphores = new Dictionary<string, Semaphore>();
+    private void InitializeSemaphores() {
+        //Get all semaphores
+        var semaphores = new List<VisualElement>();
+        var stationContainer = stationDocument.rootVisualElement.Q("Container");
+        stationContainer.Query<VisualElement>().Where(el => el.name.Contains("Sem")).ToList().ForEach(sem => {
+            semaphores.Add(sem);
+        });
+        Semaphores.Add("SemE", new Semaphore(semaphores.Find(s => s.name.Contains("SemE")), "SemE"));
+        Semaphores.Add("SemF", new Semaphore(semaphores.Find(s => s.name.Contains("SemF")), "SemF"));
+        Semaphores.Add("SemH", new Semaphore(semaphores.Find(s => s.name.Contains("SemH")), "SemH"));
+        Semaphores.Add("SemA", new Semaphore(semaphores.Find(s => s.name.Contains("SemA")), "SemA"));
+        Semaphores.Add("SemC", new Semaphore(semaphores.Find(s => s.name.Contains("SemC")), "SemC"));
+        Semaphores.Add("SemD", new Semaphore(semaphores.Find(s => s.name.Contains("SemD")), "SemD"));
+    }
     private VisualElement selectedSemaphoreElement;
-    private Button spawnTrainButton;
-    private GameObject currentTrain;
+    private Semaphore selectedSemaphore;
+
+    
 
     private void Start() {
-
-        //Initialize all semaphores
-        RouteChecker.Initialize();
 
         //Get buttons from semaphore context menu
         semContextMenuContainer = semContextMenuDocument.rootVisualElement.Q("Container");
@@ -41,12 +66,21 @@ public class StationManager : MonoBehaviour {
         substituteSignalButton.RegisterCallback<ClickEvent>(PodajSygnalZastepczy);
         releaseSignalButton.RegisterCallback<ClickEvent>(ZwolnijSygnal);
 
-
-        //Get all stuff from station
+        //Get all visual stuff from station
         stationDocument = GetComponent<UIDocument>();
         stationDocument.rootVisualElement.RegisterCallback<PointerDownEvent>(OnUILeftMouseClick);
         spawnTrainButton = stationDocument.rootVisualElement.Q("SpawnTrainButton") as Button;
-        spawnTrainButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, RouteChecker.SemE));
+        spawnTrainButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemE"]));
+
+        //Initialize all semaphores
+        InitializeSemaphores();
+
+        //DEBUG
+        //trainObject.StartSem = Semaphores["SemE"];
+        //trainObject.EndSem = Semaphores["SemA"];
+        //DEBUG
+
+        //currentTrain = trainObject;
     }
 
     private void OnUILeftMouseClick(PointerDownEvent evt) {
@@ -60,6 +94,7 @@ public class StationManager : MonoBehaviour {
         }
 
         selectedSemaphoreElement = stationDocument.rootVisualElement.Q(semName);
+        selectedSemaphore = Semaphores[Regex.Replace(selectedSemaphoreElement.name, @"\d", "")];
 
         semContextMenuContainer.style.visibility = Visibility.Visible;
         semContextMenuContainer.style.left = Input.mousePosition.x;
@@ -69,27 +104,35 @@ public class StationManager : MonoBehaviour {
     //Semaphore context menu options
     private void PodajSygnalZezwalajacy(ClickEvent evt) {
         int iloscKomor = int.Parse(Regex.Replace(selectedSemaphoreElement.name, @"\D", ""));
-        Semaphore selSem = selectedSemaphoreElement.userData as Semaphore;
 
         //Logic for checking routes
-        if (selSem.IsLocked) {
+        if (selectedSemaphore.IsLocked) {
             semContextMenuContainer.style.visibility = Visibility.Hidden;
             return;
         }
 
         switch (iloscKomor) {
             case 3:
-                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S2);
+                selectedSemaphore.ChangeLight(SemaphoreSignal.S2);
                 break;
             case 4:
-                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S10);
+                selectedSemaphore.ChangeLight(SemaphoreSignal.S10);
                 break;
             case 5:
-                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S5);
+                selectedSemaphore.ChangeLight(SemaphoreSignal.S5);
                 break;
         }
-        selSem.State = SemaphoreState.Go;
+        selectedSemaphore.State = SemaphoreState.Go;
         semContextMenuContainer.style.visibility = Visibility.Hidden;
+
+        if (!currentTrain) return;
+
+        if (selectedSemaphore == currentTrain.StartSem)
+            currentTrain.StartTrain();
+        if (selectedSemaphore == currentTrain.EndSem)
+            currentTrain.TrainGoToEnd();
+
+        
     }
 
     //TODO: implement!
@@ -99,47 +142,27 @@ public class StationManager : MonoBehaviour {
     }
 
     private void ZwolnijSygnal(ClickEvent evt) {
-        ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S1);
-        Semaphore selSem = selectedSemaphoreElement.userData as Semaphore;
-        selSem.State = SemaphoreState.Stop;
+        selectedSemaphore.ChangeLight(SemaphoreSignal.S1);
+        selectedSemaphore.State = SemaphoreState.Stop;
         semContextMenuContainer.style.visibility = Visibility.Hidden;
     }
 
-    private void ChangeLight(VisualElement semaphore, SemaphoreSignal toSignal) {
-        var lights = semaphore.Children();
-
-        switch (toSignal) {
-            case SemaphoreSignal.S1:
-                lights.Where(l => l.name.Contains("Red", StringComparison.OrdinalIgnoreCase)).First().RemoveFromClassList("semLightOff");
-                lights.Where(l => !l.name.Contains("Red", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(light => light.AddToClassList("semLightOff"));
-                break;
-            case SemaphoreSignal.S2:
-                lights.Where(l => l.name.Contains("Green", StringComparison.OrdinalIgnoreCase)).First().RemoveFromClassList("semLightOff");
-                lights.Where(l => !l.name.Contains("Green", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(light => light.AddToClassList("semLightOff"));
-                break;
-            case SemaphoreSignal.S5:
-                lights.Where(l => l.name.Contains("OrangeLight", StringComparison.OrdinalIgnoreCase) || l.name.Contains("Orange1Light", StringComparison.OrdinalIgnoreCase)).First().RemoveFromClassList("semLightOff");
-                lights.Where(l => !(l.name.Contains("OrangeLight", StringComparison.OrdinalIgnoreCase) || l.name.Contains("Orange1Light", StringComparison.OrdinalIgnoreCase))).ToList().ForEach(light => light.AddToClassList("semLightOff"));
-                break;
-            case SemaphoreSignal.S10:
-                if (lights.Count(l => l.name.Contains("Orange")) == 0) return;
-
-                lights.Where(l => l.name.Contains("Green", StringComparison.OrdinalIgnoreCase)).First().RemoveFromClassList("semLightOff");
-                lights.Where(l => l.name.Contains("OrangeLight", StringComparison.OrdinalIgnoreCase) || l.name.Contains("Orange1Light", StringComparison.OrdinalIgnoreCase)).First().RemoveFromClassList("semLightOff");
-                lights.Where(l => !(l.name.Contains("OrangeLight", StringComparison.OrdinalIgnoreCase) || l.name.Contains("Orange1Light", StringComparison.OrdinalIgnoreCase) ||
-                                    l.name.Contains("Green", StringComparison.OrdinalIgnoreCase))).ToList().ForEach(light => light.AddToClassList("semLightOff"));
-                break;
-        }
-    }
+    
 
     //Canvas and trains
     private void SpawnTrain(ClickEvent evt, Semaphore sem) {
         //If there is a train, don't make another one
-        if (currentTrain) return;
+        if (currentTrainGO) return;
 
-        currentTrain = Instantiate(trainPrefab, trainCanvas.transform, false);
-        currentTrain.name = "Train" + Guid.NewGuid().ToString().Substring(0, 5);
-        currentTrain.GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 200f);
-        currentTrain.GetComponent<Train>().StartSem = sem;
+        currentTrainGO = Instantiate(trainPrefab, trainCanvas.transform, false);
+        currentTrainGO.name = "Train" + Guid.NewGuid().ToString().Substring(0, 5);
+        currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 199f);
+
+        currentTrain = currentTrainGO.transform.GetChild(0).GetComponentInChildren<Train>();
+        currentTrain.StartSem = sem;
+        if (sem.Name == "SemE" || sem.Name == "SemF")
+            currentTrain.EndSem = Semaphores["SemA"];
+        else if (sem.Name == "SemC" || sem.Name == "SemD")
+            currentTrain.EndSem = Semaphores["SemH"];
     }
 }
