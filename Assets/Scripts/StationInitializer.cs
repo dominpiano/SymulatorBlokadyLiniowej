@@ -1,24 +1,23 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UIElements;
-
-class Semaphore {
-
-    public SemaphoreState state;
-
-    public Semaphore() { }
-}
 
 public class StationInitializer : MonoBehaviour {
 
     private UIDocument stationDocument;
     private VisualElement stationContainer;
 
+    public static List<Semaphore> semaphores = new List<Semaphore>();
+
     void Start() {
         stationDocument = GetComponent<UIDocument>();
         stationContainer = stationDocument.rootVisualElement.Q("Container");
         stationContainer.Query<VisualElement>().Where(el => el.name.Contains("Sem")).ToList().ForEach(sem => {
-            sem.userData = new Semaphore();
+            Semaphore semData = new Semaphore(Regex.Replace(sem.name, @"\d", ""));
+            semaphores.Add(semData);
+            sem.userData = semData;
         });
     }
 }

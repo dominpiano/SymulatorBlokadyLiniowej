@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using DG.Tweening;
 using System.Collections;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 
 public class ChoiceMenuScript : MonoBehaviour {
 
@@ -114,9 +115,9 @@ public class ChoiceMenuScript : MonoBehaviour {
         this.gameObject.SetActive(false);
     }
 
-    private void PlayEvent(ClickEvent evt) {
+    private async void PlayEvent(ClickEvent evt) {
         if (Globals.GameMode == 0)
-            SceneController.Instance.LoadScene("PlaySingleScene");
+            await SceneController.Instance.LoadScene("PlaySingleScene");
         //else if(Globals.GameMode == 1)
         //    SceneController.Instance.LoadScene("PlayMultiScene");
     }

@@ -15,7 +15,7 @@ public class SignalboxController : MonoBehaviour {
 
     public List<SignalboxSegment> Segments;
 
-    //For out purposes - locked means red and unlocked means white.
+    //For our purposes - locked means red and unlocked means white.
     //In PKP locked Ko is white, and unlocked (ready to be handled) is red, but this in ONLY for Ko
     private void Start() {
         Segments.AddRange(new[] { Po, Poz, Ko });

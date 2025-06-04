@@ -8,12 +8,13 @@ using UnityEngine.UIElements;
 
 public class StationManager : MonoBehaviour {
 
-    [SerializeField]
-    private InputReader inputReader;
+    [SerializeField] private InputReader inputReader;
+
+    [SerializeField] private GameObject trainCanvas;
+    [SerializeField] private GameObject trainPrefab;
 
     //Sem context menu
-    [SerializeField]
-    private UIDocument semContextMenuDocument;
+    [SerializeField] private UIDocument semContextMenuDocument;
     private VisualElement semContextMenuContainer;
     private Button allowSignalButton;
     private Button substituteSignalButton;
@@ -21,14 +22,14 @@ public class StationManager : MonoBehaviour {
 
     //Main Station View
     private UIDocument stationDocument;
+    private VisualElement selectedSemaphoreElement;
+    private Button spawnTrainButton;
+    private GameObject currentTrain;
 
-    private VisualElement selectedSemaphore;
+    private void Start() {
 
-    private void Awake() {
-
-        //Get all stuff from station
-        stationDocument = GetComponent<UIDocument>();
-        stationDocument.rootVisualElement.RegisterCallback<PointerDownEvent>(OnUILeftMouseClick);
+        //Initialize all semaphores
+        RouteChecker.Initialize();
 
         //Get buttons from semaphore context menu
         semContextMenuContainer = semContextMenuDocument.rootVisualElement.Q("Container");
@@ -39,6 +40,13 @@ public class StationManager : MonoBehaviour {
         allowSignalButton.RegisterCallback<ClickEvent>(PodajSygnalZezwalajacy);
         substituteSignalButton.RegisterCallback<ClickEvent>(PodajSygnalZastepczy);
         releaseSignalButton.RegisterCallback<ClickEvent>(ZwolnijSygnal);
+
+
+        //Get all stuff from station
+        stationDocument = GetComponent<UIDocument>();
+        stationDocument.rootVisualElement.RegisterCallback<PointerDownEvent>(OnUILeftMouseClick);
+        spawnTrainButton = stationDocument.rootVisualElement.Q("SpawnTrainButton") as Button;
+        spawnTrainButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, RouteChecker.SemE));
     }
 
     private void OnUILeftMouseClick(PointerDownEvent evt) {
@@ -47,11 +55,11 @@ public class StationManager : MonoBehaviour {
         string semName = clickedElement.name.Contains("Sem") ? clickedElement.name : (clickedElement.hierarchy.parent.name.Contains("Sem") ? clickedElement.hierarchy.parent.name : "");
         if (semName == "") {
             semContextMenuContainer.style.visibility = Visibility.Hidden;
-            selectedSemaphore = null;
+            selectedSemaphoreElement = null;
             return;
         }
 
-        selectedSemaphore = stationDocument.rootVisualElement.Q(semName);
+        selectedSemaphoreElement = stationDocument.rootVisualElement.Q(semName);
 
         semContextMenuContainer.style.visibility = Visibility.Visible;
         semContextMenuContainer.style.left = Input.mousePosition.x;
@@ -60,30 +68,40 @@ public class StationManager : MonoBehaviour {
 
     //Semaphore context menu options
     private void PodajSygnalZezwalajacy(ClickEvent evt) {
-        int iloscKomor = int.Parse(Regex.Replace(selectedSemaphore.name, @"\D", ""));
+        int iloscKomor = int.Parse(Regex.Replace(selectedSemaphoreElement.name, @"\D", ""));
+        Semaphore selSem = selectedSemaphoreElement.userData as Semaphore;
 
         //Logic for checking routes
+        if (selSem.IsLocked) {
+            semContextMenuContainer.style.visibility = Visibility.Hidden;
+            return;
+        }
 
         switch (iloscKomor) {
             case 3:
-                ChangeLight(selectedSemaphore, SemaphoreSignal.S2);
+                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S2);
                 break;
             case 4:
-                ChangeLight(selectedSemaphore, SemaphoreSignal.S10);
+                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S10);
                 break;
             case 5:
-                ChangeLight(selectedSemaphore, SemaphoreSignal.S5);
+                ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S5);
                 break;
         }
+        selSem.State = SemaphoreState.Go;
         semContextMenuContainer.style.visibility = Visibility.Hidden;
     }
 
+    //TODO: implement!
     private void PodajSygnalZastepczy(ClickEvent evt) {
+        
         semContextMenuContainer.style.visibility = Visibility.Hidden;
     }
 
     private void ZwolnijSygnal(ClickEvent evt) {
-        ChangeLight(selectedSemaphore, SemaphoreSignal.S1);
+        ChangeLight(selectedSemaphoreElement, SemaphoreSignal.S1);
+        Semaphore selSem = selectedSemaphoreElement.userData as Semaphore;
+        selSem.State = SemaphoreState.Stop;
         semContextMenuContainer.style.visibility = Visibility.Hidden;
     }
 
@@ -114,4 +132,14 @@ public class StationManager : MonoBehaviour {
         }
     }
 
+    //Canvas and trains
+    private void SpawnTrain(ClickEvent evt, Semaphore sem) {
+        //If there is a train, don't make another one
+        if (currentTrain) return;
+
+        currentTrain = Instantiate(trainPrefab, trainCanvas.transform, false);
+        currentTrain.name = "Train" + Guid.NewGuid().ToString().Substring(0, 5);
+        currentTrain.GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 200f);
+        currentTrain.GetComponent<Train>().StartSem = sem;
+    }
 }
