@@ -30,6 +30,14 @@ public class Train : MonoBehaviour {
 			throw new System.Exception("There is no such number of a semaphore!");
 	}
 
+	public void ReleaseZastawka() {
+		//NIE DZIALA ANIMACJA ZASTAWKI POPRAWIC - PEWNIE NIE DODALEM ANIMACJI ZASTAWKI DO DRUGIEGO SIGNALBOXA
+		if (EndSem.Name == "SemA")
+			StationConnection.Instance.AnimateZastawkaChange(StationConnection.Instance.Signalbox2.Ko, true);
+        if (EndSem.Name == "SemH")
+            StationConnection.Instance.AnimateZastawkaChange(StationConnection.Instance.Signalbox1.Ko, true);
+    }
+
 	public void TrainStopped() {
 		trainAnim.SetTrigger("TrainStopped");
 	}

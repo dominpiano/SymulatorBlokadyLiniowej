@@ -18,8 +18,6 @@ public class StationManager : MonoBehaviour {
     private Button spawnTrainEButton, spawnTrainFButton, spawnTrainCButton, spawnTrainDButton;
     private static GameObject currentTrainGO;
     private static Train currentTrain;
-    //debug
-    //[SerializeField] private Train trainObject;
 
     
     //UI TOOLKIT VISUALS
@@ -51,6 +49,10 @@ public class StationManager : MonoBehaviour {
     }
     private VisualElement selectedSemaphoreElement;
     private Semaphore selectedSemaphore;
+
+    //Helper
+    //Semaphore groups for blockade
+    private bool leftExit, rightExit;
 
     private void Start() {
 
@@ -92,6 +94,9 @@ public class StationManager : MonoBehaviour {
             return;
         }
 
+        leftExit = semName.Contains("SemE") || semName.Contains("SemF");
+        rightExit = semName.Contains("SemC") || semName.Contains("SemD");
+
         selectedSemaphoreElement = stationDocument.rootVisualElement.Q(semName);
         selectedSemaphore = Semaphores[Regex.Replace(selectedSemaphoreElement.name, @"\d", "")];
 
@@ -124,6 +129,12 @@ public class StationManager : MonoBehaviour {
         selectedSemaphore.State = SemaphoreState.Go;
         semContextMenuContainer.style.visibility = Visibility.Hidden;
 
+        if (leftExit)
+            StationConnection.Instance.AnimateZastawkaChange(StationConnection.Instance.Signalbox1.Po, true);
+        if (rightExit)
+            StationConnection.Instance.AnimateZastawkaChange(StationConnection.Instance.Signalbox2.Po, true);
+
+
         if (!currentTrain) return;
 
         if (selectedSemaphore == currentTrain.StartSem)
@@ -143,6 +154,7 @@ public class StationManager : MonoBehaviour {
     private void ZwolnijSygnal(ClickEvent evt) {
         selectedSemaphore.ChangeLight(SemaphoreSignal.S1);
         selectedSemaphore.State = SemaphoreState.Stop;
+
         semContextMenuContainer.style.visibility = Visibility.Hidden;
     }
 

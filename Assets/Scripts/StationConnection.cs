@@ -51,6 +51,10 @@ public class StationConnection : MonoBehaviour {
         HandleBlockAnimation(sbSegMain, sbSegSec, sbSegment);
     }
 
+    public void AnimateZastawkaChange(SignalboxSegment sbSegment, bool state) {
+        sbSegment.ChangeZastawkaState(state);
+    }
+
     public void PauseAnimatingBlockChange(SignalboxSegment sbSegment) {
         foreach (var seg in Signalbox1.Segments) {
             seg.SegmentAnimator.SetFloat("TarczkaSpeed", 0);
