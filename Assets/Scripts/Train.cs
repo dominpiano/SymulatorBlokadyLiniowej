@@ -33,4 +33,8 @@ public class Train : MonoBehaviour {
 	public void TrainStopped() {
 		trainAnim.SetTrigger("TrainStopped");
 	}
+
+	public void DestroyTrain() {
+		StationManager.DeleteTrain();
+	}
 }

@@ -15,9 +15,9 @@ public class StationManager : MonoBehaviour {
     //Train
     [SerializeField] private GameObject trainCanvas;
     [SerializeField] private GameObject trainPrefab;
-    private Button spawnTrainButton;
-    private GameObject currentTrainGO;
-    private Train currentTrain;
+    private Button spawnTrainEButton, spawnTrainFButton, spawnTrainCButton, spawnTrainDButton;
+    private static GameObject currentTrainGO;
+    private static Train currentTrain;
     //debug
     //[SerializeField] private Train trainObject;
 
@@ -52,8 +52,6 @@ public class StationManager : MonoBehaviour {
     private VisualElement selectedSemaphoreElement;
     private Semaphore selectedSemaphore;
 
-    
-
     private void Start() {
 
         //Get buttons from semaphore context menu
@@ -69,18 +67,19 @@ public class StationManager : MonoBehaviour {
         //Get all visual stuff from station
         stationDocument = GetComponent<UIDocument>();
         stationDocument.rootVisualElement.RegisterCallback<PointerDownEvent>(OnUILeftMouseClick);
-        spawnTrainButton = stationDocument.rootVisualElement.Q("SpawnTrainButton") as Button;
-        spawnTrainButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemE"]));
+        //Train spawning buttons
+        spawnTrainEButton = stationDocument.rootVisualElement.Q("SpawnTrainE") as Button;
+        spawnTrainEButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemE"]));
+        spawnTrainFButton = stationDocument.rootVisualElement.Q("SpawnTrainF") as Button;
+        spawnTrainFButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemF"]));
+        spawnTrainCButton = stationDocument.rootVisualElement.Q("SpawnTrainC") as Button;
+        spawnTrainCButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemC"]));
+        spawnTrainDButton = stationDocument.rootVisualElement.Q("SpawnTrainD") as Button;
+        spawnTrainDButton.RegisterCallback<ClickEvent>(evt => SpawnTrain(evt, Semaphores["SemD"]));
 
         //Initialize all semaphores
         InitializeSemaphores();
 
-        //DEBUG
-        //trainObject.StartSem = Semaphores["SemE"];
-        //trainObject.EndSem = Semaphores["SemA"];
-        //DEBUG
-
-        //currentTrain = trainObject;
     }
 
     private void OnUILeftMouseClick(PointerDownEvent evt) {
@@ -156,7 +155,22 @@ public class StationManager : MonoBehaviour {
 
         currentTrainGO = Instantiate(trainPrefab, trainCanvas.transform, false);
         currentTrainGO.name = "Train" + Guid.NewGuid().ToString().Substring(0, 5);
-        currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 199f);
+
+        switch (sem.Name) {
+            case "SemE":
+                currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 200f);
+                break;
+            case "SemF":
+                currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(190f, 122f);
+                break;
+            case "SemC":
+                currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(1750f, 199f);
+                break;
+            case "SemD":
+                currentTrainGO.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(1750f, 272f);
+                break;
+
+        }
 
         currentTrain = currentTrainGO.transform.GetChild(0).GetComponentInChildren<Train>();
         currentTrain.StartSem = sem;
@@ -164,5 +178,10 @@ public class StationManager : MonoBehaviour {
             currentTrain.EndSem = Semaphores["SemA"];
         else if (sem.Name == "SemC" || sem.Name == "SemD")
             currentTrain.EndSem = Semaphores["SemH"];
+    }
+
+    public static void DeleteTrain() {
+        Destroy(currentTrainGO);
+        currentTrain = null;
     }
 }
